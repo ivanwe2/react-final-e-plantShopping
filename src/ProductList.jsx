@@ -9,6 +9,7 @@ function ProductList() {
     const [showCart, setShowCart] = useState(false); 
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
+    const [cartCount, setCartCount] = useState(0);
 
     const plantsArray = [
         {
@@ -253,11 +254,20 @@ const handlePlantsClick = (e) => {
   };
 
   const handleAddToCart = (plant) => {
-    dispatch(addItem(plant));
     setAddedToCart((prevState) => ({
         ...prevState,
         [plant.name]: true,
-    }))
+    }));
+    dispatch(addItem(plant));
+    setCartCount((prevState) => prevState + 1);
+  }
+
+  const handleDeleteFromCart = (plantName) => {
+    setCartCount((prevState) => prevState - 1);
+    setAddedToCart((prevState) => ({
+        ...prevState,
+        [plantName]: false,
+    }));
   }
     return (
         <div>
@@ -276,7 +286,7 @@ const handlePlantsClick = (e) => {
             </div>
             <div style={styleObjUl}>
                 <div> <a href="#" onClick={(e)=>handlePlantsClick(e)} style={styleA}>Plants</a></div>
-                <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg></h1></a></div>
+                <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68">2<rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path><text x="50%" y="50%" text-anchor="middle" fill="white" font-size="72" dy=".3em">{cartCount}</text></svg></h1></a></div>
             </div>
         </div>
         {!showCart? (
@@ -291,7 +301,12 @@ const handlePlantsClick = (e) => {
                                 <img className="product-image" src={plant.image} alt={plant.name} />
                                 <div className="product-title">{plant.name}</div>
                                 {/*Similarly like the above plant.name show other details like description and cost*/}
-                                <button  className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                <button
+                                    className="product-button"
+                                    onClick={() => handleAddToCart(plant)}
+                                    disabled={addedToCart[plant.name]}
+                                    style={addedToCart[plant.name] ? { backgroundColor: "gray" } : {}}
+                                >Add to Cart</button>
                             </div>
                             ))}
                         </div>
@@ -301,7 +316,7 @@ const handlePlantsClick = (e) => {
 
         </div>
  ) :  (
-    <CartItem onContinueShopping={handleContinueShopping}/>
+    <CartItem onContinueShopping={handleContinueShopping} onItemDelete={handleDeleteFromCart}/>
 )}
     </div>
     );
