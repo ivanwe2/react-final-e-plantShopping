@@ -300,7 +300,7 @@ const handlePlantsClick = (e) => {
                             <div className="product-card" key={plantIndex}>
                                 <img className="product-image" src={plant.image} alt={plant.name} />
                                 <div className="product-title">{plant.name}</div>
-                                <span>{plant.cost}</span>
+                                <span>{plant.cost}</span><br/>
                                 <button
                                     className="product-button"
                                     onClick={() => handleAddToCart(plant)}
